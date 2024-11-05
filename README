@@ -1,3 +1,4 @@
+```markdown
 # WordCounter
 
 WordCounter is a Go application that fetches content from a list of URLs, counts the top words based on a specified word bank, and handles rate limiting dynamically based on server responses. The application is designed to efficiently manage concurrent requests while respecting server limits.
