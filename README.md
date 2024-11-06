@@ -48,17 +48,37 @@ WordCounter is a Go application that fetches content from a list of URLs, counts
     go mod tidy
 
 ## Configuration
-You can configure the application by modifying the parameters in main.go, such as:
-The list of URLs to fetch (passed as a command-line argument).
+The constants package includes configurable settings for managing rate limiting, request thresholds, and cooldown durations to optimize performance and stability. Below is a breakdown of each constant:
 
-## Usage
-Prepare Your URL and Word Bank Files: Create a file named urls.txt containing the URLs to fetch (one per line), and another file named bank.txt containing valid words (one per line).
+1. CooldownDurationSeconds: Specifies the cooldown duration (300 seconds) applied when the service encounters responses with status codes 999, 429, or 503, helping to manage retry intervals for temporary errors.
 
-Run the Application: Execute the following command:
+2. MaxConcurrentRequestsPerSec: Defines the maximum concurrent requests allowed per second by the rate limiter. Set to 15, this controls the request load and mitigates spikes.
 
+3. RateLimiterBurstSize: Sets the burst size for rate limiting (5), allowing brief request bursts beyond the steady rate, which is useful for handling short demand spikes without exceeding limits.
+
+4. SuccessThresholdForIncrease: Represents the threshold of consecutive successful requests (100) required to trigger an increase in the rate limit, supporting dynamic adjustments during stable operation.
+
+5. RateLimiterAdjustmentPct: Specifies the rate adjustment percentage (10%) applied when successful request thresholds are met, enabling adaptive scaling based on recent performance.
+
+These constants provide adaptive control over request flows, maintaining service stability with cooldowns and rate adjustments.
+
+### Customizing Application Parameters
+Additional parameters, such as the list of URLs to fetch, can be configured in main.go. To specify URLs, pass the list as a command-line argument.
+
+#### Usage
+Prepare URL and Word Bank Files:
+
+Create urls.txt containing the URLs to fetch (one URL per line).
+Create bank.txt containing valid words (one word per line).
+Run the Application: Execute the following commands to process the URLs and display the word count:
+
+For Testing with Fewer URLs: If you have a smaller set of URLs to process, use the following command to run the application with the testurls.txt file:
 ```bash
 go run main.go testurls.txt
-go run main.go urls.txt
-Output: The application will print the top counted words and their frequencies in a structured format.
 ```
+For Running with the Full List of URLs: To process the entire set of URLs in urls.txt, you can either use the following command or remove the parameter entirely:
+```bash
+go run main.go urls.txt
+```
+Output: The application will print the top counted words and their frequencies in a structured format.
 
