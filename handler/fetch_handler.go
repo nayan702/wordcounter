@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"wordcounter/constants"
 	"wordcounter/utils"
 	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/time/rate"
@@ -69,7 +70,7 @@ func FetchContents(urls []string, limiter *rate.Limiter) <-chan FetchResult {
 						limiter.SetLimit(rate.Limit(newLimit)) // Set the new limit
 					}
 					mu.Unlock() // Unlock after adjustment
-					time.Sleep(60 * time.Second) // Backoff for 60 seconds
+					time.Sleep(constants.CooldownDurationSeconds * time.Second) // cooldown time for server
 				}  else if strings.Contains(err.Error(), "404") {
 					// For a 404 error, we can log it and break the retry loop without blocking others
 					log.Printf("URL %s returned a 404 error. Skipping this URL.", url)
@@ -120,10 +121,10 @@ func FetchURL(url string) (utils.Content, error) {
 
 // adjustRate increments the rate limit back to the original value after successful fetches.
 func adjustRate(limiter *rate.Limiter, originalLimit rate.Limit, successCount int) {
-	const successThreshold = 50 // Number of successes to trigger a limit increase
+	const successThreshold = constants.SuccessThresholdForIncrease // Number of successes to trigger a limit increase
 
 	if successCount%successThreshold == 0 && limiter.Limit() < originalLimit {
-		newLimit := limiter.Limit() + (originalLimit / 10) // Increase limit by 10% of the original limit
+		newLimit := limiter.Limit() + (originalLimit / constants.RateLimiterAdjustmentPct) // Increase limit by X% of the original limit
 		if newLimit > originalLimit {
 			newLimit = originalLimit // Don't exceed the original limit
 		}

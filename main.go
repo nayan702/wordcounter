@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"sync"
+	"wordcounter/constants"
 	"wordcounter/handler"
 	"wordcounter/parser"
 	"wordcounter/utils"
@@ -32,7 +33,7 @@ func main() {
 
 	wordBankSet := utils.CreateWordBankSet(wordBank)
 
-	limiter := rate.NewLimiter(15, 5) // 15 request per second with a burst of 5
+	limiter := rate.NewLimiter(constants.MaxConcurrentRequestsPerSec, constants.RateLimiterBurstSize)
 	results := handler.FetchContents(urls, limiter)
 
 	wordCounts := make(map[string]int)
