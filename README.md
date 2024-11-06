@@ -1,4 +1,3 @@
-```markdown
 # WordCounter
 
 WordCounter is a Go application that fetches content from a list of URLs, counts the top words based on a specified word bank, and handles rate limiting dynamically based on server responses. The application is designed to efficiently manage concurrent requests while respecting server limits.
@@ -18,6 +17,7 @@ WordCounter is a Go application that fetches content from a list of URLs, counts
 - A word bank file containing valid words.
 
 ## Project Structure
+```
 /wordcounter
     ├── main.go                # Main entry point for the application
     ├── handler
@@ -30,7 +30,7 @@ WordCounter is a Go application that fetches content from a list of URLs, counts
         ├── fetch_handler_test.go # Tests for fetching logic
         ├── word_extractor_test.go # Tests for word extraction logic
         └── word_utils_test.go     # Tests for utility functions
-
+```
 ## Installation
 
 1. **Clone the Repository**:
@@ -57,8 +57,8 @@ Prepare Your URL and Word Bank Files: Create a file named urls.txt containing th
 Run the Application: Execute the following command:
 
 ```bash
-Copy code
-go run cmd/main.go urls.txt
+go run main.go testurls.txt
+go run main.go urls.txt
 Output: The application will print the top counted words and their frequencies in a structured format.
 ```
 
